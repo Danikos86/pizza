@@ -1,10 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSortType } from "../redux/slices/filterSlice";
+import { selectSort, setSortType } from "../redux/slices/filterSlice";
 import { useRef } from "react";
 import { useEffect } from "react";
 
-export const list = [
+type SortListItem = {
+  name: string;
+  sortProperty: string;
+}
+
+export const list: SortListItem[] = [
   { name: "популярности(по убыв.)", sortProperty: "rating" },
   { name: "популярности(по возр.)", sortProperty: "-rating" },
   { name: "цене(по убыв.)", sortProperty: "price" },
@@ -13,20 +18,20 @@ export const list = [
   { name: "алфавиту(по возр.)", sortProperty: "-title" },
 ];
 
-function Sort() {
+const Sort: React.FC = () => {
   const dispath = useDispatch();
-  const sort = useSelector((state) => state.filterSlice.sort);
-  const sortRef = useRef();
+  const sort = useSelector(selectSort);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const onClickListItem = (obj) => {
+  const onClickListItem = (obj: SortListItem) => {
     dispath(setSortType(obj));
     setIsVisible(false);
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (!event.composedPath().includes(sortRef.current)) {
         setIsVisible(false);
       }
